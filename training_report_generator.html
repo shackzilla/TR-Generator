@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Training Report Generator</title>
+  <style>
+    body {
+      font-family: 'Courier New', monospace;
+      max-width: 800px;
+      margin: auto;
+      padding: 20px;
+      background-color: rgb(55, 61, 53);
+      color: #dcdcdc;
+    }
+    h1 {
+      color: #ff6611;
+      text-transform: uppercase;
+      text-align: center;
+      border-bottom: 2px solid #dcdcdc;
+      padding-bottom: 10px;
+    }
+    textarea, input, select {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      background-color: #2a3329;
+      color: #dcdcdc;
+      border: 1px solid #888;
+      border-radius: 4px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 14px;
+      margin: 5px 5px 5px 0;
+      cursor: pointer;
+      background-color: #556b2f;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    button:hover {
+      background-color: #6b8e23;
+    }
+    #output {
+      white-space: pre-wrap;
+      background: #1e1e1e;
+      padding: 10px;
+      border: 1px solid #555;
+      margin-top: 20px;
+      color: #dcdcdc;
+    }
+    .instructions {
+      font-style: italic;
+      font-weight: bold;
+      margin-top: 16px;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+  <h1>Training Report Generator</h1>
+
+  <label>UNIT REPORTING</label>
+  <select id="unit">
+    <option value="">-- Select Unit --</option>
+    <option>Outlaw 1</option>
+    <option>Outlaw 1-1</option>
+    <option>Outlaw 1-2</option>
+    <option>Outlaw 1-3</option>
+    <option>Outlaw 1-1-A</option>
+    <option>Outlaw 1-1-B</option>
+    <option>Outlaw 1-1-C</option>
+    <option>Outlaw 1-2-A</option>
+    <option>Outlaw 1-2-B</option>
+    <option>Outlaw 1-2-C</option>
+    <option>Outlaw 1-3-A</option>
+    <option>Outlaw 1-3-B</option>
+    <option>Outlaw 1-3-C</option>
+  </select>
+
+  <label>TYPE OF TRAINING</label>
+  <select id="trainingType">
+    <option value="">-- Select Training Type --</option>
+    <option>Scheduled Platoon Training</option>
+    <option>Scheduled Squad Training</option>
+    <option>Scheduled Fireteam Training</option>
+    <option>Rescheduled Platoon Training</option>
+    <option>Rescheduled Squad Training</option>
+    <option>Rescheduled Fireteam Training</option>
+  </select>
+
+  <label>DATE CONDUCTED (e.g. 06JUN25)</label>
+  <input type="text" id="date">
+
+  <label>TIME CONDUCTED (e.g. 1900 CST)</label>
+  <input type="text" id="time">
+
+  <div class="instructions">
+    All lists of personnel must be sorted by Rank (Marine > Navy) > Last Name > 1st Initial (if needed) > 2nd Initial (if needed)
+  </div>
+
+  <label>REQUIRED ATTENDEES</label>
+  <small>Only list those who were in attendance.</small>
+  <textarea id="required" placeholder="Manually entered names..."></textarea>
+
+  <label>NON-REQUIRED ATTENDEES</label>
+  <small>Only list those not required to be there, such as Fill-Ins.</small>
+  <textarea id="nonRequired"></textarea>
+
+  <label>ABSENT</label>
+  <small>Only list those scheduled to be there that were not present.</small>
+  <textarea id="absent"></textarea>
+
+  <label>TRAINING CONDUCTED</label>
+  <textarea id="trainingConducted"></textarea>
+
+  <label>COMMENTS</label>
+  <textarea id="comments"></textarea>
+
+  <label>Respectfully submitted,</label>
+  <input type="text" id="name" placeholder="Name">
+  <input type="text" id="billet" placeholder="Billet">
+  <input type="text" id="team" placeholder="Team">
+
+  <button onclick="generateReport()">Generate Report</button>
+
+  <h2>Generated Report</h2>
+  <div id="output"></div>
+
+  <script>
+    function getValueOrNA(id) {
+      const value = document.getElementById(id).value.trim();
+      return value === '' ? 'N/A' : value;
+    }
+
+    function generateReport() {
+      const unit = getValueOrNA('unit');
+      const trainingType = getValueOrNA('trainingType');
+      const date = getValueOrNA('date');
+      const time = getValueOrNA('time');
+      const required = getValueOrNA('required');
+      const nonRequired = getValueOrNA('nonRequired');
+      const absent = getValueOrNA('absent');
+      const trainingConducted = getValueOrNA('trainingConducted');
+      const comments = getValueOrNA('comments');
+      const name = getValueOrNA('name');
+      const billet = getValueOrNA('billet');
+      const team = getValueOrNA('team');
+
+      const report = `UNIT REPORTING
+${unit}
+
+TYPE OF TRAINING
+${trainingType}
+
+DATE CONDUCTED
+${date}
+
+TIME CONDUCTED
+${time}
+
+REQUIRED ATTENDEES
+${required}
+
+NON-REQUIRED ATTENDEES
+${nonRequired}
+
+ABSENT
+${absent}
+
+TRAINING CONDUCTED
+${trainingConducted}
+
+COMMENTS
+${comments}
+
+Respectfully submitted,
+
+${name}
+${billet}
+${team}`;
+
+      document.getElementById('output').textContent = report;
+    }
+  </script>
+</body>
+</html>
