@@ -130,6 +130,9 @@
   <h2>Generated Report</h2>
   <div id="output"></div>
 
+  <button onclick="copyToClipboard()" style="background-color:#2e8b57; color:#fff;">Copy to Clipboard</button>
+  <button onclick="goToReply()" style="background-color:#ffcc88; color:darkred;">Go to Forums Post</button>
+
   <script>
     function getValueOrNA(id) {
       const value = document.getElementById(id).value.trim();
@@ -185,6 +188,16 @@ ${team}`;
 
       document.getElementById('output').textContent = report;
     }
-  </script>
+  function copyToClipboard() {
+  const text = document.getElementById('output').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    alert("Copied to clipboard!");
+  });
+}
+
+function goToReply() {
+  window.open("https://15thmeu.net/forums/topic/653-training-reports-outlaw-1/#replyForm", "_blank");
+}
+</script>
 </body>
 </html>
