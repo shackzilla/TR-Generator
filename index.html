@@ -185,6 +185,16 @@ ${team}`;
 
       document.getElementById('output').textContent = report;
     }
+  function copyToClipboard() {
+  const text = document.getElementById('output').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    alert("Copied to clipboard!");
+  });
+}
+
+function goToReply() {
+  window.open("https://15thmeu.net/forums/topic/653-training-reports-outlaw-1/#replyForm", "_blank");
+}
   </script>
 </body>
 </html>
