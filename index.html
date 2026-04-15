@@ -5,18 +5,35 @@
 <title>15th MEU Training Report Generator</title>
 
 <style>
+
+/* ===== MARPAT BACKGROUND ===== */
 body {
-    background-color: #1c1f1c;
-    color: #d4d4d4;
+    margin: 0;
     font-family: Arial, sans-serif;
-    margin: 40px;
+    background-color: #3b4a3f;
+    background-image:
+        repeating-linear-gradient(45deg, #3b4a3f 0px, #3b4a3f 4px, #2f3a31 4px, #2f3a31 8px),
+        repeating-linear-gradient(-45deg, #4f5f4f 0px, #4f5f4f 6px, #3b4a3f 6px, #3b4a3f 12px);
 }
 
+/* ===== PAPER CONTAINER ===== */
+.container {
+    max-width: 850px;        /* About paper width */
+    margin: 40px auto;       /* Center horizontally */
+    background-color: #1c1f1c;
+    padding: 40px;
+    color: #d4d4d4;
+    border-radius: 6px;
+    box-shadow: 0 0 25px rgba(0,0,0,0.6);
+}
+
+/* ===== HEADERS ===== */
 h1 {
     text-align: center;
     color: #4CAF50;
 }
 
+/* ===== FORM ELEMENTS ===== */
 label {
     font-weight: bold;
     display: block;
@@ -48,6 +65,7 @@ button:hover {
     background-color: #45a049;
 }
 
+/* ===== GENERATED REPORT ===== */
 #generatedReport {
     background-color: #111;
     padding: 20px;
@@ -56,19 +74,29 @@ button:hover {
     border: 1px solid #444;
 }
 
+/* ===== PRINT FRIENDLY ===== */
 @media print {
     body {
         background: white;
+    }
+    .container {
+        box-shadow: none;
+        background: white;
         color: black;
+        max-width: 100%;
+        margin: 0;
     }
     button {
         display: none;
     }
 }
+
 </style>
 </head>
 
 <body>
+
+<div class="container">
 
 <h1>15th MEU(SOC) Realism Unit Training Report Generator</h1>
 
@@ -103,7 +131,7 @@ button:hover {
 
 <div id="rescheduleLinkContainer" style="display:none;">
   <label>Link to Rescheduled Training Report (COC Notification Proof):</label>
-  <input type="url" id="rescheduleLink" placeholder="Paste Discord / Google Doc / Forum link here">
+  <input type="url" id="rescheduleLink">
 </div>
 
 <label>DATE & TIME CONDUCTED:</label>
@@ -140,9 +168,11 @@ button:hover {
 <h2>Generated Report</h2>
 <div id="generatedReport"></div>
 
+</div>
+
 <script>
 
-// ===== ROSTER (EDIT AS NEEDED) =====
+// ===== ROSTER =====
 const roster = [
     { rank: "Capt", name: "Riske" },
     { rank: "1stLt", name: "Rose" },
@@ -156,7 +186,6 @@ const roster = [
 
 const rankOrder = ["Capt","1stLt","2ndLt","GySgt","SSgt","Sgt","Cpl","LCpl","PFC","Pvt"];
 
-// Populate Submitted By Dropdown
 function populateSubmitter() {
     const select = document.getElementById("submittedBy");
     const sorted = roster.sort((a,b) => rankOrder.indexOf(a.rank) - rankOrder.indexOf(b.rank));
@@ -169,7 +198,6 @@ function populateSubmitter() {
 }
 populateSubmitter();
 
-// Show/Hide Reschedule Link
 function checkRescheduled() {
     const trainingType = document.getElementById("typeOfTraining").value;
     const container = document.getElementById("rescheduleLinkContainer");
@@ -181,7 +209,6 @@ function checkRescheduled() {
     }
 }
 
-// Generate Report
 function generateReport() {
 
     const trainingType = document.getElementById("typeOfTraining").value;
@@ -246,7 +273,6 @@ ${document.getElementById("submittedBy").value}
     document.getElementById("generatedReport").innerText = report;
 }
 
-// Copy to Clipboard
 function copyReport() {
     const text = document.getElementById("generatedReport").innerText;
     navigator.clipboard.writeText(text).then(() => {
