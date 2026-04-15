@@ -18,8 +18,8 @@ body {
 
 /* ===== PAPER CONTAINER ===== */
 .container {
-    max-width: 850px;        /* About paper width */
-    margin: 40px auto;       /* Center horizontally */
+    max-width: 850px;
+    margin: 40px auto;
     background-color: #1c1f1c;
     padding: 40px;
     color: #d4d4d4;
@@ -27,13 +27,11 @@ body {
     box-shadow: 0 0 25px rgba(0,0,0,0.6);
 }
 
-/* ===== HEADERS ===== */
 h1 {
     text-align: center;
     color: #4CAF50;
 }
 
-/* ===== FORM ELEMENTS ===== */
 label {
     font-weight: bold;
     display: block;
@@ -65,7 +63,6 @@ button:hover {
     background-color: #45a049;
 }
 
-/* ===== GENERATED REPORT ===== */
 #generatedReport {
     background-color: #111;
     padding: 20px;
@@ -74,17 +71,17 @@ button:hover {
     border: 1px solid #444;
 }
 
-/* ===== PRINT FRIENDLY ===== */
+/* ===== PRINT ===== */
 @media print {
     body {
         background: white;
     }
     .container {
-        box-shadow: none;
         background: white;
         color: black;
-        max-width: 100%;
+        box-shadow: none;
         margin: 0;
+        max-width: 100%;
     }
     button {
         display: none;
@@ -98,7 +95,7 @@ button:hover {
 
 <div class="container">
 
-<h1>15th MEU(SOC) Realism Unit Training Report Generator</h1>
+<h1>15th MEU(SOC) Training Report Generator</h1>
 
 <label>UNIT REPORTING:</label>
 <select id="unitReporting" required>
@@ -129,37 +126,45 @@ button:hover {
   <option>Rescheduled Fireteam Training</option>
 </select>
 
+
 <div id="rescheduleLinkContainer" style="display:none;">
-  <label>Link to Rescheduled Training Report (COC Notification Proof):</label>
-  <input type="url" id="rescheduleLink">
+  <label>Paste link to Rescheduled Training Reports:</label>
+  <input type="url" id="rescheduleLink" placeholder="Paste Discord / Doc / Report link here">
 </div>
 
 <label>DATE & TIME CONDUCTED:</label>
-<input type="text" id="dateTime" placeholder="Enter manually (e.g., 14 APR 2026 | 1900 CST)">
+<input type="text" id="dateTime" placeholder="Enter manually (e.g., 14APR2026 | 1900 CST)">
 
 <label>ATTENDEES:</label>
 <textarea id="attendees" rows="4"></textarea>
+<input type="text" id="attendeesFormat" placeholder="Sort by Rank (Marine/Navy), 1st Initial (if needed), 2nd Initial (if needed), Last Name">
 
 <label>ABSENT:</label>
 <textarea id="absent" rows="3"></textarea>
+<input type="text" id="absentFormat" placeholder="Sort by Rank (Marine/Navy), 1st Initial (if needed), 2nd Initial (if needed), Last Name">
 
 <label>FILL-IN'S:</label>
 <textarea id="fillIns" rows="3"></textarea>
+<input type="text" id="fillInsFormat" placeholder="Sort by Rank (Marine/Navy), 1st Initial (if needed), 2nd Initial (if needed), Last Name">
 
 <label>TRAINING CONDUCTED:</label>
 <textarea id="trainingConducted" rows="5"></textarea>
+<input type="text" id="trainingDetailsFormat" placeholder="Provide details on training and what took place. Minimum one sentence.">
 
 <label>COMMENTS:</label>
 <textarea id="comments" rows="4"></textarea>
+<input type="text" id="commentsFormat" placeholder="General comments about the training experience.">
 
 <label>SUSTAINS: (Required)</label>
 <textarea id="sustains" rows="4" required></textarea>
+<input type="text" id="sustainsFormat" placeholder="At least one (1) Sustain">
 
 <label>IMPROVES: (Required)</label>
 <textarea id="improves" rows="4" required></textarea>
+<input type="text" id="improvesFormat" placeholder="At least one (1) Improve">
 
 <label>Respectfully Submitted,</label>
-<select id="submittedBy"></select>
+<input type="text" id="submittedBy" placeholder="Name, Billet, Team">
 
 <button onclick="generateReport()">Generate Report</button>
 <button onclick="copyReport()">Copy to Clipboard</button>
@@ -172,36 +177,12 @@ button:hover {
 
 <script>
 
-// ===== ROSTER =====
-const roster = [
-    { rank: "Capt", name: "Riske" },
-    { rank: "1stLt", name: "Rose" },
-    { rank: "GySgt", name: "Smith" },
-    { rank: "SSgt", name: "Johnson" },
-    { rank: "Sgt", name: "Williams" },
-    { rank: "Cpl", name: "Davis" },
-    { rank: "LCpl", name: "Brown" },
-    { rank: "PFC", name: "Martinez" }
-];
-
-const rankOrder = ["Capt","1stLt","2ndLt","GySgt","SSgt","Sgt","Cpl","LCpl","PFC","Pvt"];
-
-function populateSubmitter() {
-    const select = document.getElementById("submittedBy");
-    const sorted = roster.sort((a,b) => rankOrder.indexOf(a.rank) - rankOrder.indexOf(b.rank));
-    sorted.forEach(member => {
-        const option = document.createElement("option");
-        option.value = `${member.rank} ${member.name}`;
-        option.textContent = `${member.rank} ${member.name}`;
-        select.appendChild(option);
-    });
-}
-populateSubmitter();
-
+// Show/Hide reschedule link
 function checkRescheduled() {
-    const trainingType = document.getElementById("typeOfTraining").value;
+    const type = document.getElementById("typeOfTraining").value;
     const container = document.getElementById("rescheduleLinkContainer");
-    if (trainingType.includes("Rescheduled")) {
+
+    if (type.includes("Rescheduled")) {
         container.style.display = "block";
     } else {
         container.style.display = "none";
@@ -209,39 +190,39 @@ function checkRescheduled() {
     }
 }
 
+// Generate report
 function generateReport() {
 
-    const trainingType = document.getElementById("typeOfTraining").value;
-    const rescheduleLink = document.getElementById("rescheduleLink").value;
+    const unit = document.getElementById("unitReporting").value;
+    const type = document.getElementById("typeOfTraining").value;
+    const link = document.getElementById("rescheduleLink").value;
 
-    if (!document.getElementById("unitReporting").value ||
-        !trainingType ||
-        !document.getElementById("sustains").value ||
-        !document.getElementById("improves").value) {
+    if (!unit || !type || !document.getElementById("sustains").value || !document.getElementById("improves").value) {
         alert("All required fields must be completed.");
         return;
     }
 
-    if (trainingType.includes("Rescheduled") && !rescheduleLink) {
+    if (type.includes("Rescheduled") && !link) {
         alert("Rescheduled training requires a notification link.");
         return;
     }
 
-    let rescheduleSection = "";
-    if (rescheduleLink) {
-        rescheduleSection = `
+    let rescheduleText = "";
+    if (link) {
+        rescheduleText = `
+
 RESCHEDULE NOTIFICATION LINK:
-${rescheduleLink}
+${link}
 `;
     }
 
     const report = `
 UNIT REPORTING:
-${document.getElementById("unitReporting").value}
+${unit}
 
 TYPE OF TRAINING:
-${trainingType}
-${rescheduleSection}
+${type}${rescheduleText}
+
 DATE & TIME CONDUCTED:
 ${document.getElementById("dateTime").value}
 
@@ -273,11 +254,11 @@ ${document.getElementById("submittedBy").value}
     document.getElementById("generatedReport").innerText = report;
 }
 
+// Copy to clipboard
 function copyReport() {
     const text = document.getElementById("generatedReport").innerText;
-    navigator.clipboard.writeText(text).then(() => {
-        alert("Report copied to clipboard.");
-    });
+    navigator.clipboard.writeText(text);
+    alert("Report copied to clipboard.");
 }
 
 </script>
