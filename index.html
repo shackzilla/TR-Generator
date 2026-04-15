@@ -107,8 +107,7 @@ button:hover {
 </div>
 
 <label>DATE & TIME CONDUCTED:</label>
-<input type="text" id="dateTime">
-<button type="button" onclick="autoDate()">Auto Fill Current Date/Time</button>
+<input type="text" id="dateTime" placeholder="Enter manually (e.g., 14 APR 2026 | 1900 CST)">
 
 <label>ATTENDEES:</label>
 <textarea id="attendees" rows="4"></textarea>
@@ -180,11 +179,6 @@ function checkRescheduled() {
         container.style.display = "none";
         document.getElementById("rescheduleLink").value = "";
     }
-}
-
-// Auto Date
-function autoDate() {
-    document.getElementById("dateTime").value = new Date().toLocaleString();
 }
 
 // Generate Report
